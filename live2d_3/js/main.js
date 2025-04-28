@@ -38,18 +38,24 @@ class Viewer {
 
             if (this.model) {
                 this.model.position = new PIXI.Point((width * 0.5), (height * 0.5));
-                this.model.scale = new PIXI.Point((this.model.position.x * 0.06), (this.model.position.x * 0.06));
+                this.model.scale = new PIXI.Point((this.model.position.x * 0.065), (this.model.position.x * 0.065));
                 this.model.masks.resize(this.app.view.width, this.app.view.height);
             }
             if(this.model.height <= 200) {
-                this.model.scale = new PIXI.Point((this.model.position.x * 0.08), (this.model.position.x * 0.08));
+                this.model.scale = new PIXI.Point((this.model.position.x * 0.065), (this.model.position.x * 0.065));
+               // this.model.scale = new PIXI.Point((this.model.position.x * 0.06), (this.model.position.x * 0.06));
             }
         };
         this.isClick = false;
-        this.app.view.addEventListener('mousedown', (event) => {
+        
+        // 添加触摸事件支持
+        this.app.view.addEventListener('touchstart', (event) => {
+            event.preventDefault();
             this.isClick = true;
         });
-        this.app.view.addEventListener('mousemove', (event) => {
+
+        this.app.view.addEventListener('touchmove', (event) => {
+            event.preventDefault();
             if (this.isClick) {
                 this.isClick = false;
                 if (this.model) {
@@ -58,21 +64,25 @@ class Viewer {
             }
 
             if (this.model) {
-                let mouse_x = this.model.position.x - event.offsetX;
-                let mouse_y = this.model.position.y - event.offsetY;
+                const touch = event.touches[0];
+                let mouse_x = this.model.position.x - touch.clientX;
+                let mouse_y = this.model.position.y - touch.clientY;
                 this.model.pointerX = -mouse_x / this.app.view.height;
                 this.model.pointerY = -mouse_y / this.app.view.width;
             }
         });
-        this.app.view.addEventListener('mouseup', (event) => {
+
+        this.app.view.addEventListener('touchend', (event) => {
+            event.preventDefault();
             if (!this.model) {
                 return;
             }
 
             if (this.isClick) {
-                if (this.isHit('TouchHead', event.offsetX, event.offsetY)) {
+                const touch = event.changedTouches[0];
+                if (this.isHit('TouchHead', touch.clientX, touch.clientY)) {
                     this.startAnimation("touch_head", "base");
-                } else if (this.isHit('TouchSpecial', event.offsetX, event.offsetY)) {
+                } else if (this.isHit('TouchSpecial', touch.clientX, touch.clientY)) {
                     this.startAnimation("touch_special", "base");
                 } else {
                     const bodyMotions = ["touch_body", "main_1", "main_2", "main_3"];
@@ -229,4 +239,4 @@ class Viewer {
     }
 }
 
-var v = new Viewer('model'); 
+var v = new Viewer('model');
