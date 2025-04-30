@@ -48,7 +48,52 @@ class Viewer {
         };
         this.isClick = false;
         
-        // 添加触摸事件支持
+        // PC端鼠标事件
+        this.app.view.addEventListener('mousedown', (event) => {
+            event.preventDefault();
+            this.isClick = true;
+        });
+
+        this.app.view.addEventListener('mousemove', (event) => {
+            event.preventDefault();
+            if (this.isClick) {
+                this.isClick = false;
+                if (this.model) {
+                    this.model.inDrag = true;
+                }
+            }
+
+            if (this.model) {
+                let mouse_x = this.model.position.x - event.clientX;
+                let mouse_y = this.model.position.y - event.clientY;
+                this.model.pointerX = -mouse_x / this.app.view.height;
+                this.model.pointerY = -mouse_y / this.app.view.width;
+            }
+        });
+
+        this.app.view.addEventListener('mouseup', (event) => {
+            event.preventDefault();
+            if (!this.model) {
+                return;
+            }
+
+            if (this.isClick) {
+                if (this.isHit('TouchHead', event.clientX, event.clientY)) {
+                    this.startAnimation("touch_head", "base");
+                } else if (this.isHit('TouchSpecial', event.clientX, event.clientY)) {
+                    this.startAnimation("touch_special", "base");
+                } else {
+                    const bodyMotions = ["touch_body", "main_1", "main_2", "main_3"];
+                    let currentMotion = bodyMotions[Math.floor(Math.random()*bodyMotions.length)];
+                    this.startAnimation(currentMotion, "base");
+                }
+            }
+
+            this.isClick = false;
+            this.model.inDrag = false;
+        });
+
+        // 触摸事件支持
         this.app.view.addEventListener('touchstart', (event) => {
             event.preventDefault();
             this.isClick = true;
