@@ -7,7 +7,7 @@ class Viewer {
         window.Viewer = this;
         this.canvas = document.querySelector(".Canvas");
       
-        this.selectAnimation = document.querySelector(".selectAnimation");
+        // this.selectAnimation = document.querySelector(".selectAnimation");
 
      
 
@@ -30,21 +30,28 @@ class Viewer {
         });
         window.onresize = (event) => {
             if (event === void 0) { event = null; }
-            let width = window.innerWidth;
+            let width = window.outerWidth;
             let height = (width / 16.0) * 9.0;
+            if(window.outerWidth > 964){
+                width = window.outerWidth -289;
+            }
+            if(window.outerWidth < 500){
+                height = (width / 16.0) * 12;
+            }
             this.app.view.style.width = width + "px";
             this.app.view.style.height = height + "px";
             this.app.renderer.resize(width, height);
 
             if (this.model) {
                 this.model.position = new PIXI.Point((width * 0.5), (height * 0.5));
-                this.model.scale = new PIXI.Point((this.model.position.x * 0.065), (this.model.position.x * 0.065));
+                this.model.scale = new PIXI.Point((this.model.position.x * 0.045), (this.model.position.x * 0.045));
                 this.model.masks.resize(this.app.view.width, this.app.view.height);
+                if(window.innerWidth < 500){
+                 
+                    this.model.scale = new PIXI.Point((this.model.position.x * 0.075), (this.model.position.x * 0.075));
+                }
             }
-            if(this.model.height <= 200) {
-                this.model.scale = new PIXI.Point((this.model.position.x * 0.065), (this.model.position.x * 0.065));
-               // this.model.scale = new PIXI.Point((this.model.position.x * 0.06), (this.model.position.x * 0.06));
-            }
+            
         };
         this.isClick = false;
         
@@ -145,19 +152,19 @@ class Viewer {
         this.app.stage.removeChildren();
 
         // 清空动画选择区
-        this.selectAnimation.innerHTML = '';
-        model.motions.forEach((value, key) => {
-            if (key != "effect") {
-                let btn = document.createElement("button");
-                let label = document.createTextNode(key);
-                btn.appendChild(label);
-                btn.className = "btn btn-secondary";
-                btn.addEventListener("click", () => {
-                    this.startAnimation(key, "base");
-                });
-                this.selectAnimation.appendChild(btn);
-            }
-        });
+        // this.selectAnimation.innerHTML = '';
+        // model.motions.forEach((value, key) => {
+        //     if (key != "effect") {
+        //         let btn = document.createElement("button");
+        //         let label = document.createTextNode(key);
+        //         btn.appendChild(label);
+        //         btn.className = "btn btn-secondary";
+        //         btn.addEventListener("click", () => {
+        //             this.startAnimation(key, "base");
+        //         });
+        //         this.selectAnimation.appendChild(btn);
+        //     }
+        // });
 
         this.model = model;
         this.model.update = this.onUpdate; // HACK: use hacked update fn for drag support
