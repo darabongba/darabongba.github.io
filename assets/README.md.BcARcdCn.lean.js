@@ -1,0 +1,1 @@
+import{_ as i,c as e,o as s,ae as l}from"./chunks/framework.IHxOwmKa.js";const k=JSON.parse('{"title":"VitePress Live2D","description":"","frontmatter":{},"headers":[],"relativePath":"README.md","filePath":"README.md"}'),t={name:"README.md"};function n(h,a,r,p,d,o){return s(),e("div",null,a[0]||(a[0]=[l("",39)]))}const u=i(t,[["render",n]]);export{k as __pageData,u as default};
